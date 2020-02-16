@@ -223,7 +223,7 @@ module.exports = { api };
 ```
 
 - 保存したらデプロイ．
-- `helloworld関数を削除していいかどうか訊かれたら`yes`でOK．
+- `helloworld`関数を削除していいかどうか訊かれたらyesでOK．
 
 ```bash
 $ firebase deploy
