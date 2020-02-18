@@ -431,6 +431,7 @@ module.exports = { api };
 - 許可したいエンドポイントだけに追記を行う．
 
 ```js
+// index.js
 const functions = require('firebase-functions');
 const express = require('express');
 const requestPromise = require('request-promise-native');
