@@ -29,9 +29,9 @@ $ npm -v
 6.13.7
 ```
 
-### ライブラリのインストール
+### Fiirebaseを扱うツールのインストール
 
-- firebase関連のコマンドを実行するため，下記のコマンドでライブラリをインストールする．
+- firebase関連のコマンドを実行するため，下記のコマンドでインストールする．
 
 ```bash
 $ npm install -g firebase-tools
@@ -122,7 +122,7 @@ i  Writing gitignore file to .gitignore...
 
 - 必要なファイルが準備されているので，エディタでプロジェクトのフォルダを開く．
 - `functions/index.js`を開くと下記のような内容が記述されている．
-- 1行目はライブラリの読み込み．
+- 1行目はモジュールの読み込み．
 - `helloWorld`は関数名．この関数にリクエストが来ると，`Hello from Firebase!`という文字列を返すよう記述されている．
 
 ```js
@@ -310,9 +310,9 @@ $ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/user/5
 - Node.jsからAPIへリクエストを送信することで，クライアントアプリケーションの処理を単純にすることができる．
 - webアプリでもネイティブアプリでも，Node.jsのエンドポイントにリクエストを送信するだけで良い．
 
-### 必要なライブラリのインストール
+### 必要なモジュールのインストール
 
-- Node.jsの標準機能でもhttpリクエストを行えるが，記述が煩雑になるので`request`ライブラリを利用する．
+- Node.jsの標準機能でもhttpリクエストを行えるが，記述が煩雑になるので`request`モジュールを利用する．
 - ついでにPromiseを扱える`request-promise-native`もインストールする．
 - 下記コマンドでインストール．
 
@@ -383,7 +383,7 @@ $ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/gbooks/react
 ## CORS対策
 
 - ターミナルから`curl`コマンドでリクエストを送信すると正常に動作するが，クライアントアプリから`axios`などでリクエストを送信するとCORSエラーが発生する．
-- アプリケーションからも利用できるように，追加のライブラリをインストールする．
+- アプリケーションからも利用できるように，追加のモジュールをインストールする．
 
 ```bash
 $ cd functions
