@@ -379,4 +379,88 @@ $ firebase deploy
 $ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/gbooks/react
 ```
 
+
+## CORS対策
+
+- ターミナルから`curl`コマンドでリクエストを送信すると正常に動作するが，クライアントアプリから`axios`などでリクエストを送信するとCORSエラーが発生する．
+- アプリケーションからも利用できるように，追加のライブラリをインストールする．
+
+```bash
+$ cd functions
+$ npm install cors
+```
+
+## ファイル内全てのAPIについてCORSを許可したい場合
+
+- 全部外部からのリクエストを許可する場合には下記のように追記すればOK．
+
+```js
+// index.js
+const functions = require('firebase-functions');
+const express = require('express');
+const requestPromise = require('request-promise-native');
+const cors = require('cors'); // 追加
+
+const app = express();
+
+app.use(cors());  // 追加
+
+const getDataFromApi = async keyword => {
+  // 省略
+}
+
+app.get('/hello', (req, res) => {
+  // 省略
+});
+
+app.get('/user/:userId', (req, res) => {
+  // 省略
+});
+
+app.get('/gbooks/:keyword', (req, res) => {
+  // 省略
+});
+
+const api = functions.https.onRequest(app);
+module.exports = { api };
+```
+
+### 個別のAPIについてCORSを許可したい場合
+
+- 全部許可せずに，指定したエンドポイントのみアクセスを許可したい場合．
+- 許可したいエンドポイントだけに追記を行う．
+
+```js
+const functions = require('firebase-functions');
+const express = require('express');
+const requestPromise = require('request-promise-native');
+const cors = require('cors'); // 追加
+
+const app = express();
+
+// app.use(cors());  // 一旦コメントアウト
+
+const getDataFromApi = async keyword => {
+  // 省略
+}
+
+app.get('/hello', (req, res) => {
+  // 省略
+});
+
+app.get('/user/:userId', (req, res) => {
+  // 省略
+});
+
+// ここに`cors()`を追加
+app.get('/gbooks/:keyword', cors(), (req, res) => {
+  // 省略
+});
+
+const api = functions.https.onRequest(app);
+module.exports = { api };
+```
+
+- クライアントアプリケーションからリクエストを送信してデータが返ってくればOK．
+
 今回はここまで( `･ω･)b
