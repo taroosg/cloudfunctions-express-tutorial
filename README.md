@@ -1,4 +1,4 @@
-# cloud functions + Express
+# Cloud Functions + ExpressでサーバレスAPIを実装
 
 作成日：2020/02/16
 
@@ -7,6 +7,7 @@
 - Cloud Functions上でGoogle books APIから情報を取得する．
 - クライアントから送信されてきたキーワードを受け取り，APIに投げる．
 - APIから返ってきたデータをクライアントに送信する．
+- Cloud Functionsを利用することでサーバを用意することなくAPIを実装！
 
 ## 環境構築
 
