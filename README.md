@@ -233,7 +233,7 @@ f the deployments. Yes
 i  functions: deleting function helloWorld(us-central1)...
 ✔  functions[helloWorld(us-central1)]: Successful delete operation.
 ✔  functions[api(us-central1)]: Successful create operation.
-Function URL (api): https://us-central1-fir-todo-8868b.cloudfunctions.net/api
+Function URL (api): https://hogehoge.cloudfunctions.net/api
 
 ✔  Deploy complete!
 
@@ -295,9 +295,9 @@ $ firebase deploy
 - デプロイしたらリクエスト送信
 
 ```bash
-$ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/user/2
+$ curl https://hogehoge.cloudfunctions.net/api/user/2
 {"id":2,"name":"ハーゴン"}
-$ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/user/5
+$ curl https://hogehoge.cloudfunctions.net/api/user/5
 {"id":5,"name":"ピサロ"}
 ```
 
@@ -376,7 +376,7 @@ $ firebase deploy
 - なんかいろいろかえってくればOK！
 
 ```bash
-$ curl https://us-central1-fir-todo-8868b.cloudfunctions.net/api/gbooks/react
+$ curl https://hogehoge.cloudfunctions.net/api/gbooks/react
 ```
 
 
