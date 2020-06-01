@@ -2,6 +2,8 @@
 
 作成日：2020/02/16
 
+更新日：2020/06/01
+
 ## 今回の趣旨
 
 - Cloud Functions上でGoogle books APIから情報を取得する．
@@ -10,12 +12,6 @@
 - Cloud Functionsを利用することでサーバを用意することなくAPIを実装！
 
 ## 環境構築
-
-### Firebaseのプロジェクト作成
-
-- Firebaseのコンソールにログインし，新規プロジェクトを作成する．
-- プロジェクト名は任意．
-- DBなどは特に設定しなくてOK．
 
 ### 必要なツールのバージョン確認
 
@@ -26,27 +22,46 @@
 $ node -v
 v12.15.0
 $ npm -v
-6.13.7
+6.14.5
 ```
+
+### Firebaseのプロジェクト作成
+
+- Firebaseのコンソールにログインし，新規プロジェクトを作成する．
+- プロジェクト名は任意（今回は`20200601-functions`）．
+- DBなどは特に設定しなくてOK（下記画面が表示された段階でOK）．
+
+![firebaseプロジェクト画面](./images/project_view01.png)
 
 ### Fiirebaseを扱うツールのインストール
 
 - firebase関連のコマンドを実行するため，下記のコマンドでインストールする．
+- `-g`をつけてグローバルにインストールする．
+- すでにインストールしている場合も，下記コマンドで最新版にアップデートできるため必ず行う．
 
 ```bash
 $ npm install -g firebase-tools
 ```
 
+実行結果
+
+```bash
++ firebase-tools@8.4.1
+updated 6 packages in 20.484s
+```
+
+【注意】バージョンが`8.4.0`の場合は後々エラーが発生して先へ進めなくなるので必ず`8.4.1`以上にしておくこと．
+
 ### 雛形の作成
 
 - 適当な場所にディレクトリを作成し，ターミナルで移動して必要なファイルを準備する．
-- 今回は例としてデスクトップに`20200215cloudfunctions`ディレクトリを作成する．
+- 今回は例としてデスクトップに`20200601cloudfunctions`ディレクトリを作成する．
 - 下記コマンドを順番に実行．
 
 ```bash
 $ cd ~/Desktop
-$ mkdir 20200215cloudfunctions
-$ cd 20200215cloudfunctions
+$ mkdir 20200601cloudfunctions
+$ cd 20200601cloudfunctions
 $ firebase init
 ```
 
@@ -82,13 +97,13 @@ $ firebase init
   hoge-c83e4 (hoge)
   hoge-791f2 (hogehoge)
   fuga-813c6 (fuga)
-❯ functions-69daf (20200215-functions)
+❯ functions-69daf (20200601-functions)
   hoge-216007 (hogefuga)
   piyo (piyo)
   hogefuga (hoge-fuga)
 ```
 
-- 選択肢が出るので，`Javascript`を選択してEnter．
+- 選択肢が出るので，`JavaScript`を選択してEnter．
 
 ```bash
 ? What language would you like to use to write Cloud Functions? (Use arrow keys)
@@ -116,7 +131,7 @@ i  Writing gitignore file to .gitignore...
 これで準備完了！
 
 
-## 初回デプロイ&動作確認
+## 動作確認&デプロイ
 
 ### ファイルの内容確認&解説
 
@@ -137,7 +152,7 @@ const functions = require('firebase-functions');
 // });
 ```
 
-### 編集&デプロイ
+### 編集&ローカルサーバーでの動作確認
 
 - 下記のように編集する（コメントアウト外すだけ）．
 
@@ -153,7 +168,39 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 });
 ```
 
-- 保存したらデプロイする．
+- 専用コマンドが用意されているのでローカルサーバーを立ち上げる．
+
+```bash
+$ firebase serve
+```
+
+- 実行結果
+
+```bash
+=== Serving from '/Users/taroosg/Desktop/20200601cloudfunctions'...
+
+⚠  Your requested "node" version "8" doesn't match your global version "12"
+i  functions: Watching "/Users/taroosg/Desktop/20200601cloudfunctions/functions" for Cloud Functions...
+✔  functions[helloWorld]: http function initialized (http://localhost:5000/cloudfunctions-3517c/us-central1/helloWorld).
+
+```
+
+- このとき，ローカルサーバのURLが発行されるためメモしておくことをオススメする（あとから確認もできるが煩雑なため）．
+
+- ローカルサーバーが立ち上がったらターミナルからリクエストを送る．
+- メッセージ（`Hello from Firebase!`）が返ってくればOK！
+
+```bash
+$ curl http://localhost:5000/cloudfunctions-3517c/us-central1/helloWorld
+Hello from Firebase!
+```
+
+- 確認したら`ctrl + c`でローカルサーバを停止する．
+
+
+### デプロイ&動作確認
+
+- 動作確認したらデプロイする．
 - ターミナルで下記を実行．
 
 ```bash
@@ -179,9 +226,9 @@ Function URL (helloWorld): https://hogehoge.cloudfunctions.net/helloWorld
 Project Console: https://console.firebase.google.com/project/fir-todo-8868b/overview
 ```
 
-### 動作確認
+- このとき，デプロイ先のURL（`Function URL (helloWorld):...`）が発行されるためメモしておくことをオススメする（あとから確認もできるが煩雑なため）．
 
-- ターミナルからリクエストを送る．
+- デプロイが完了したらターミナルからリクエストを送る．
 - メッセージが返ってくればOK！
 
 ```bash
@@ -194,7 +241,7 @@ Hello from Firebase!
 - ExpressはNode.jsのフレームワーク．
 - APIのエンドポイントを手軽に実装できるので便利．
 - 下記コマンドを実行してインストールする．
-- （`functions`フォルダに移動しておく）
+- 【重要】`functions`フォルダに移動しておく．
 
 ```bash
 $ cd functions
@@ -203,7 +250,7 @@ $ npm install express
 
 - インストールが終わったらindex.jsを編集する．
 - `app.get()`でAPIエンドポイントを定義．
-- `/hello`がエンドポイントのURL．
+- `/hello`がエンドポイントのURL．リクエスト時に動作させたい関数のエンドポイントを指定する．
 
 ```js
 // index.js
@@ -223,7 +270,26 @@ const api = functions.https.onRequest(app);
 module.exports = { api };
 ```
 
-- 保存したらデプロイ．
+- 保存したら動作確認．
+
+```bash
+$ firebase serve
+=== Serving from '/Users/taroosg/Desktop/20200601cloudfunctions'...
+
+⚠  Your requested "node" version "8" doesn't match your global version "12"
+i  functions: Watching "/Users/taroosg/Desktop/20200601cloudfunctions/functions" for Cloud Functions...
+✔  functions[api]: http function initialized (http://localhost:5000/cloudfunctions-3517c/us-central1/api).
+
+```
+
+- ターミナルからリクエストを送る．
+
+```bash
+$ curl http://localhost:5000/cloudfunctions-3517c/us-central1/api/hello
+Hello Express!
+```
+
+- 確認したらデプロイ．
 - `helloworld`関数を削除していいかどうか訊かれたらyesでOK．
 
 ```bash
@@ -268,25 +334,39 @@ app.get('/hello', (req, res) => {
   res.send('Hello Express!');
 });
 
-// エンドポイントを追加
+// ↓↓↓ エンドポイントを追加 ↓↓↓
 app.get('/user/:userId', (req, res) => {
   const users = [
-    { id: 1, name: 'りゅうおう' },
-    { id: 2, name: 'ハーゴン' },
-    { id: 3, name: 'バラモス' },
-    { id: 4, name: 'ゾーマ' },
-    { id: 5, name: 'ピサロ' },
+    { id: 1, name: 'ジョナサン' },
+    { id: 2, name: 'ジョセフ' },
+    { id: 3, name: '承太郎' },
+    { id: 4, name: '仗助' },
+    { id: 5, name: 'ジョルノ' },
   ];
   // req.params.userIdでURLの後ろにつけた値をとれる．
   const targetUser = users.find(user => user.id === Number(req.params.userId));
   res.send(targetUser);
 });
 
+// 以降変更なし
 const api = functions.https.onRequest(app);
 module.exports = { api };
 ```
 
-- 保存したらデプロイ
+- まずはローカルサーバーで動作確認
+
+```bash
+$ firebase serve
+```
+
+- ユーザIDを指定してリクエスト送信
+
+```bash
+curl http://localhost:5000/cloudfunctions-3517c/us-central1/api/user/3
+{"id":3,"name":"承太郎"}
+```
+
+- 動作を確認したらデプロイ
 
 ```bash
 $ firebase deploy
@@ -296,9 +376,9 @@ $ firebase deploy
 
 ```bash
 $ curl https://hogehoge.cloudfunctions.net/api/user/2
-{"id":2,"name":"ハーゴン"}
+{"id":2,"name":"ジョセフ"}
 $ curl https://hogehoge.cloudfunctions.net/api/user/5
-{"id":5,"name":"ピサロ"}
+{"id":5,"name":"ジョルノ"}
 ```
 
 レスポンスが返ってくれば動作OK．
@@ -356,27 +436,135 @@ app.get('/user/:userId', (req, res) => {
 // エンドポイント追加
 app.get('/gbooks/:keyword', (req, res) => {
   // APIリクエストの関数を実行
-  getDataFromApi(req.params.keyword)
-    .then(response => res.send(response))
+  const response = await getDataFromApi(req.params.keyword);
+  res.send(response);
 });
 
 const api = functions.https.onRequest(app);
 module.exports = { api };
 ```
 
-### 動作確認
+### 動作確認&デプロイ
 
-- 保存したらデプロイ
+- ローカルサーバーで確認．
+
+```bash
+$ firebase serve
+```
+
+- リクエスト送信（例として`keyword`に`node.js`を指定）
+```bash
+$ curl http://localhost:5000/cloudfunctions-3517c/us-central1/api/gbooks/node.js
+↓のようなJSONデータがたくさん返ってくればOK
+{
+  "kind": "books#volume",
+  "id": "fOgtAgAAQBAJ",
+  "etag": "McoTnjan+uE",
+  "selfLink": "https://www.googleapis.com/books/v1/volumes/fOgtAgAAQBAJ",
+  "volumeInfo": {
+    "title": "Mastering Node.js",
+    "authors": [
+      "Sandro Pasquali"
+    ],
+    "publisher": "Packt Publishing Ltd",
+    "publishedDate": "2013-11-25",
+    "description": "This book contains an extensive set of practical examples and an easy-to-follow approach to creating 3D objects.This book is great for anyone who already knows JavaScript and who wants to start creating 3D graphics that run in any browser. You don’t need to know anything about advanced math or WebGL; all that is needed is a general knowledge of JavaScript and HTML. The required materials and examples can be freely downloaded and all tools used in this book are open source.",
+    "industryIdentifiers": [
+      {
+        "type": "ISBN_13",
+        "identifier": "9781782166337"
+      },
+      {
+        "type": "ISBN_10",
+        "identifier": "1782166335"
+      }
+    ],
+    "readingModes": {
+      "text": true,
+      "image": true
+    },
+    "pageCount": 346,
+    "printType": "BOOK",
+    "categories": [
+      "Computers"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": true,
+    "contentVersion": "2.2.2.0.preview.3",
+    "panelizationSummary": {
+      "containsEpubBubbles": false,
+      "containsImageBubbles": false
+    },
+    "imageLinks": {
+      "smallThumbnail": "http://books.google.com/books/content?id=fOgtAgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+      "thumbnail": "http://books.google.com/books/content?id=fOgtAgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.co.jp/books?id=fOgtAgAAQBAJ&printsec=frontcover&dq=intitle:node.js&hl=&cd=10&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=fOgtAgAAQBAJ&source=gbs_api",
+    "canonicalVolumeLink": "https://play.google.com/store/books/details?id=fOgtAgAAQBAJ"
+  },
+  "saleInfo": {
+    "country": "JP",
+    "saleability": "FOR_SALE",
+    "isEbook": true,
+    "listPrice": {
+      "amount": 3299,
+      "currencyCode": "JPY"
+    },
+    "retailPrice": {
+      "amount": 2969,
+      "currencyCode": "JPY"
+    },
+    "buyLink": "https://play.google.com/store/books/details?id=fOgtAgAAQBAJ&rdid=book-fOgtAgAAQBAJ&rdot=1&source=gbs_api",
+    "offers": [
+      {
+        "finskyOfferType": 1,
+        "listPrice": {
+          "amountInMicros": 3299000000,
+          "currencyCode": "JPY"
+        },
+        "retailPrice": {
+          "amountInMicros": 2969000000,
+          "currencyCode": "JPY"
+        }
+      }
+    ]
+  },
+  "accessInfo": {
+    "country": "JP",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+      "isAvailable": true
+    },
+    "pdf": {
+      "isAvailable": true
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=fOgtAgAAQBAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+  },
+  "searchInfo": {
+    "textSnippet": "This book contains an extensive set of practical examples and an easy-to-follow approach to creating 3D objects.This book is great for anyone who already knows JavaScript and who wants to start creating 3D graphics that run in any browser."
+  }
+}
+```
+
+- 動作確認したらデプロイ
 
 ```bash
 $ firebase deploy
 ```
 
 - ターミナルからリクエストを送る．
-- なんかいろいろかえってくればOK！
+- ローカルサーバのときと同様にいろいろ返ってくればOK！
 
 ```bash
 $ curl https://hogehoge.cloudfunctions.net/api/gbooks/react
+うまくいっていればJSONデータが返ってくる
 ```
 
 
