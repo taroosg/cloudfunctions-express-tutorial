@@ -646,7 +646,7 @@ app.get('/user/:userId', (req, res) => {
   // 省略
 });
 
-app.get('/gbooks/:keyword', (req, res) => {
+app.get('/gbooks/:keyword', async (req, res) => {
   // 省略
 });
 
@@ -683,7 +683,7 @@ app.get('/user/:userId', (req, res) => {
 });
 
 // ここに`cors()`を追加
-app.get('/gbooks/:keyword', cors(), (req, res) => {
+app.get('/gbooks/:keyword', cors(), async (req, res) => {
   // 省略
 });
 
