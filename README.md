@@ -475,7 +475,7 @@ app.get('/user/:userId', (req, res) => {
 });
 
 // エンドポイント追加
-app.get('/gbooks/:keyword', (req, res) => {
+app.get('/gbooks/:keyword', async (req, res) => {
   // APIリクエストの関数を実行
   const response = await getDataFromApi(req.params.keyword);
   res.send(response);
